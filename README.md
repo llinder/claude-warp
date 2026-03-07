@@ -16,7 +16,7 @@ A Claude Code plugin that integrates with [Warp terminal](https://warp.dev), pro
 Add the marketplace and install the plugin:
 
 ```sh
-claude plugin marketplace add github:llinder/claude-warp
+claude plugin marketplace add llinder/claude-warp
 claude plugin install warp@claude-warp
 ```
 
