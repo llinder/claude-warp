@@ -121,40 +121,38 @@ func TestBuildStopMessage(t *testing.T) {
 	transcriptDir := t.TempDir()
 
 	tests := []struct {
-		name       string
-		transcript string
-		wantSubstr string
+		name               string
+		lastAssistantMsg   string
+		transcript         string
+		wantSubstr         string
 	}{
 		{
-			name:       "empty path",
-			transcript: "",
-			wantSubstr: "Task completed",
+			name:       "empty input",
+			wantSubstr: "Done",
 		},
 		{
-			name: "with prompt and response",
-			transcript: `{"type":"user","message":{"content":"Deploy the app"}}
-{"type":"assistant","message":{"content":[{"type":"text","text":"Deployed successfully."}]}}
-`,
-			wantSubstr: "Deploy the app",
+			name:             "uses last_assistant_message",
+			lastAssistantMsg: "Deployed successfully.",
+			wantSubstr:       "Deployed successfully.",
 		},
 		{
-			name: "with bash commands",
-			transcript: `{"type":"user","message":{"content":"Run tests"}}
-{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"go test ./...","description":"run tests"}},{"type":"text","text":"All tests pass."}]}}
+			name: "falls back to transcript",
+			transcript: `{"type":"assistant","message":{"content":[{"type":"text","text":"All tests pass."}]}}
 `,
-			wantSubstr: "1 commands run",
+			wantSubstr: "All tests pass.",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var path string
+			input := stopInput{LastAssistantMessage: tt.lastAssistantMsg}
 			if tt.transcript != "" {
-				path = filepath.Join(transcriptDir, tt.name+".jsonl")
+				path := filepath.Join(transcriptDir, tt.name+".jsonl")
 				os.WriteFile(path, []byte(tt.transcript), 0644)
+				input.TranscriptPath = path
 			}
 
-			msg := buildStopMessage(path)
+			msg := buildStopMessage(input)
 			if !strings.Contains(msg, tt.wantSubstr) {
 				t.Errorf("buildStopMessage() = %q, want substring %q", msg, tt.wantSubstr)
 			}
