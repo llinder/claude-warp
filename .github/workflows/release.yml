@@ -31,3 +31,5 @@ jobs:
             dist/claude-warp-darwin-arm64
             dist/claude-warp-linux-amd64
             dist/claude-warp-linux-arm64
+            dist/claude-warp-windows-amd64.exe
+            dist/claude-warp-windows-arm64.exe
