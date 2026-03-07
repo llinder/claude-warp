@@ -3,6 +3,7 @@ package workflow
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -114,8 +115,9 @@ func TestListEmpty(t *testing.T) {
 func TestListSkipsBadFiles(t *testing.T) {
 	tmpDir := t.TempDir()
 	t.Setenv("HOME", tmpDir)
+	t.Setenv("XDG_DATA_HOME", "")
 
-	wfDir := filepath.Join(tmpDir, ".warp", "workflows")
+	wfDir := PersonalDir()
 	os.MkdirAll(wfDir, 0755)
 
 	// Write a valid workflow
@@ -136,9 +138,17 @@ func TestListSkipsBadFiles(t *testing.T) {
 
 func TestPersonalDir(t *testing.T) {
 	t.Setenv("HOME", "/fakehome")
+	t.Setenv("XDG_DATA_HOME", "")
 	dir := PersonalDir()
-	if dir != "/fakehome/.warp/workflows" {
-		t.Errorf("PersonalDir() = %q, want /fakehome/.warp/workflows", dir)
+
+	var want string
+	if runtime.GOOS == "linux" {
+		want = "/fakehome/.local/share/warp-terminal/workflows"
+	} else {
+		want = "/fakehome/.warp/workflows"
+	}
+	if dir != want {
+		t.Errorf("PersonalDir() = %q, want %q", dir, want)
 	}
 }
 

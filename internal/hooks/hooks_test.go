@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/llinder/claude-warp/internal/workflow"
 )
 
 func TestSessionStart_InWarp(t *testing.T) {
@@ -53,8 +55,9 @@ func TestSessionStart_WithExistingWorkflows(t *testing.T) {
 	tmpDir := t.TempDir()
 	t.Setenv("HOME", tmpDir)
 
-	// Create a fake workflow
-	wfDir := filepath.Join(tmpDir, ".warp", "workflows")
+	// Create a fake workflow at the platform-appropriate path
+	t.Setenv("XDG_DATA_HOME", "")
+	wfDir := workflow.PersonalDir()
 	os.MkdirAll(wfDir, 0755)
 	os.WriteFile(filepath.Join(wfDir, "test.yaml"), []byte("name: Test WF\ncommand: echo hi\ndescription: A test\n"), 0644)
 
