@@ -3,12 +3,19 @@ package notify
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"runtime"
 	"strings"
 )
 
 // Send sends a Warp notification using OSC 777 escape sequences.
+// Skips the notification if Warp is the frontmost app (user is already looking at it).
 // Title and body are sanitized to prevent terminal escape injection.
 func Send(title, body string) error {
+	if isWarpFocused() {
+		return nil
+	}
+
 	title = sanitize(title)
 	body = sanitize(body)
 
@@ -21,6 +28,19 @@ func Send(title, body string) error {
 	// OSC 777 format: \033]777;notify;<title>;<body>\007
 	_, err = fmt.Fprintf(tty, "\033]777;notify;%s;%s\007", title, body)
 	return err
+}
+
+// isWarpFocused checks if Warp is the frontmost application on macOS.
+func isWarpFocused() bool {
+	if runtime.GOOS != "darwin" {
+		return false
+	}
+	out, err := exec.Command("osascript", "-e",
+		`tell application "System Events" to get bundle identifier of first application process whose frontmost is true`).Output()
+	if err != nil {
+		return false
+	}
+	return strings.HasPrefix(strings.TrimSpace(string(out)), "dev.warp.Warp")
 }
 
 // openTTY tries /dev/tty first, then falls back to known TTY env vars.
