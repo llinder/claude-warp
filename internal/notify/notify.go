@@ -12,7 +12,7 @@ func Send(title, body string) error {
 	title = sanitize(title)
 	body = sanitize(body)
 
-	tty, err := os.OpenFile("/dev/tty", os.O_WRONLY, 0)
+	tty, err := openTTY()
 	if err != nil {
 		return nil // silently fail if no tty (e.g. running in CI)
 	}
@@ -21,6 +21,26 @@ func Send(title, body string) error {
 	// OSC 777 format: \033]777;notify;<title>;<body>\007
 	_, err = fmt.Fprintf(tty, "\033]777;notify;%s;%s\007", title, body)
 	return err
+}
+
+// openTTY tries /dev/tty first, then falls back to known TTY env vars.
+// Claude Code subprocesses may not have a controlling terminal, so we
+// check for the actual PTY path via environment variables.
+func openTTY() (*os.File, error) {
+	f, err := os.OpenFile("/dev/tty", os.O_WRONLY, 0)
+	if err == nil {
+		return f, nil
+	}
+
+	for _, env := range []string{"_P9K_SSH_TTY", "_P9K_TTY", "GPG_TTY"} {
+		if path := os.Getenv(env); path != "" {
+			if f, err := os.OpenFile(path, os.O_WRONLY, 0); err == nil {
+				return f, nil
+			}
+		}
+	}
+
+	return nil, fmt.Errorf("no tty available")
 }
 
 // sanitize strips control characters (0x00-0x1F, 0x7F) to prevent
