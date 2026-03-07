@@ -20,11 +20,11 @@ func Stop() error {
 	var input stopInput
 	if err := json.NewDecoder(os.Stdin).Decode(&input); err != nil {
 		// Fall back to simple notification if we can't read input
-		return notify.Send("Claude Code", "Task completed")
+		return notify.Send(notifyTitle(), "Task completed")
 	}
 
 	msg := buildStopMessage(input.TranscriptPath)
-	return notify.Send("Claude Code", msg)
+	return notify.Send(notifyTitle(), msg)
 }
 
 func buildStopMessage(transcriptPath string) string {

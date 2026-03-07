@@ -24,7 +24,7 @@
     ],
     "Notification": [
       {
-        "matcher": "*",
+        "matcher": "idle_prompt|elicitation_dialog",
         "hooks": [
           {
             "type": "command",
