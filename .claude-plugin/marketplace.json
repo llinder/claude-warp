@@ -1,0 +1,18 @@
+{
+  "name": "claude-warp",
+  "description": "Warp terminal integration for Claude Code with workflow generation and launch configs",
+  "owner": {
+    "name": "Lance Linder",
+    "url": "https://github.com/llinder"
+  },
+  "plugins": [
+    {
+      "name": "warp",
+      "description": "Native Warp notifications, workflow generation, and launch configuration support for Claude Code",
+      "source": "./plugins/warp",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": ["notifications", "terminal", "warp", "workflows"]
+    }
+  ]
+}
