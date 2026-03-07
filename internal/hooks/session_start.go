@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/llinder/claude-warp/internal/notify"
 	"github.com/llinder/claude-warp/internal/workflow"
 )
 
@@ -21,6 +23,11 @@ func SessionStart() error {
 				"Install Warp (https://warp.dev) for native notifications and workflow integration.",
 		}
 		return json.NewEncoder(os.Stdout).Encode(resp)
+	}
+
+	// Set Warp tab title to project name for easy identification
+	if dir, err := os.Getwd(); err == nil {
+		notify.SetTabTitle("Claude: " + filepath.Base(dir))
 	}
 
 	var parts []string
@@ -60,6 +67,9 @@ func SessionStart() error {
 	parts = append(parts, fmt.Sprintf("  Save launch config:        %s save-launch --name <name> --tab <title:cwd:command> [--tab <title:cwd:command>]...", bin))
 	parts = append(parts, "")
 	parts = append(parts, "When you discover useful or repeated commands during a session, proactively suggest saving them as Warp workflows.")
+	parts = append(parts, "")
+	parts = append(parts, "TAB TITLE: The Warp tab title has been set to identify this Claude session.")
+	parts = append(parts, "If the title reverts, the user should add `export WARP_DISABLE_AUTO_TITLE=true` to their shell config (~/.zshrc or ~/.bashrc).")
 
 	resp := map[string]string{
 		"systemMessage": strings.Join(parts, "\n"),

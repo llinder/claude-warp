@@ -25,6 +25,9 @@ func Notification() error {
 		msg = "Input needed"
 	}
 
+	// Re-set the tab title so it persists if Warp auto-title resets it
+	notify.SetTabTitle(notifyTitle())
+
 	return notify.Send(notifyTitle(), msg)
 }
 

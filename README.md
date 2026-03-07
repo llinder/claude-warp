@@ -41,6 +41,14 @@ make build
 
 This compiles the binary into `plugins/warp/scripts/claude-warp`.
 
+### Optional: persistent tab titles
+
+The plugin sets the Warp tab title to "Claude: \<project\>" on session start to help identify sessions. To prevent Warp from overriding this, add to your `~/.zshrc` or `~/.bashrc`:
+
+```sh
+export WARP_DISABLE_AUTO_TITLE=true
+```
+
 ## How it works
 
 The plugin registers three Claude Code hooks:

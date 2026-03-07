@@ -43,6 +43,21 @@ func openTTY() (*os.File, error) {
 	return nil, fmt.Errorf("no tty available")
 }
 
+// SetTabTitle sets the Warp tab title using OSC 0 escape sequences.
+func SetTabTitle(title string) error {
+	title = sanitize(title)
+
+	tty, err := openTTY()
+	if err != nil {
+		return nil
+	}
+	defer tty.Close()
+
+	// OSC 0 format: \033]0;<title>\007
+	_, err = fmt.Fprintf(tty, "\033]0;%s\007", title)
+	return err
+}
+
 // sanitize strips control characters (0x00-0x1F, 0x7F) to prevent
 // terminal escape sequence injection.
 func sanitize(s string) string {
