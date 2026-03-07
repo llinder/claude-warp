@@ -27,6 +27,8 @@ claude plugin install warp@claude-warp --scope user      # all projects (default
 claude plugin install warp@claude-warp --scope project   # current project only
 ```
 
+The binary is automatically downloaded from GitHub Releases on first use.
+
 ### From source
 
 Requires Go 1.25+.
@@ -38,20 +40,6 @@ make build
 ```
 
 This compiles the binary into `plugins/warp/scripts/claude-warp`.
-
-### Manual install
-
-Copy or symlink the `plugins/warp` directory into your Claude Code plugins location:
-
-```sh
-# User-scoped (all projects)
-cp -r plugins/warp ~/.claude/plugins/warp
-
-# Project-scoped (per-repo)
-cp -r plugins/warp .claude/plugins/warp
-```
-
-Claude Code will automatically detect the plugin on the next session start.
 
 ## How it works
 
@@ -101,7 +89,7 @@ claude-warp save-launch \
 make build    # Build the binary
 make test     # Run tests
 make lint     # Run go vet
-make dist     # Cross-compile for darwin/linux (amd64/arm64)
+make dist     # Cross-compile for all platforms (darwin/linux/windows × amd64/arm64)
 ```
 
 ## Plugin structure
@@ -109,11 +97,12 @@ make dist     # Cross-compile for darwin/linux (amd64/arm64)
 ```
 plugins/warp/
 ├── .claude-plugin/
-│   └── plugin.json      # Plugin metadata
+│   └── plugin.json           # Plugin metadata
 ├── hooks/
-│   └── hooks.json       # Hook definitions
+│   └── hooks.json            # Hook definitions
 └── scripts/
-    └── claude-warp      # Compiled binary (gitignored)
+    ├── claude-warp-wrapper.sh  # Bootstrap script (downloads binary on first run)
+    └── claude-warp             # Compiled binary (gitignored, auto-downloaded)
 ```
 
 ## License

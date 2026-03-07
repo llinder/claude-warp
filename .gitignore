@@ -1,2 +1,4 @@
 dist/
 plugins/warp/scripts/claude-warp
+!plugins/warp/scripts/claude-warp-wrapper.sh
+plugins/warp/scripts/.version

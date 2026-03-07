@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/claude-warp session-start"
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/claude-warp-wrapper.sh session-start"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/claude-warp stop"
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/claude-warp-wrapper.sh stop"
           }
         ]
       }
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/claude-warp notification"
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/claude-warp-wrapper.sh notification"
           }
         ]
       }
