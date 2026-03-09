@@ -10,7 +10,7 @@
       "name": "warp",
       "description": "Native Warp notifications, workflow generation, and launch configuration support for Claude Code",
       "source": "./plugins/warp",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "category": "productivity",
       "tags": [
         "notifications",

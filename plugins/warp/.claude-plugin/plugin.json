@@ -1,7 +1,7 @@
 {
   "name": "warp",
   "description": "Warp terminal integration for Claude Code - native notifications, workflow generation, and launch configurations",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "author": {
     "name": "Lance Linder",
     "url": "https://github.com/llinder"
