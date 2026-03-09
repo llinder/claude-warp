@@ -7,13 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-
-	"github.com/llinder/claude-warp/internal/workflow"
 )
 
 func TestSessionStart_InWarp(t *testing.T) {
 	t.Setenv("TERM_PROGRAM", "WarpTerminal")
-	// Use temp HOME so workflow discovery doesn't find real files
 	t.Setenv("HOME", t.TempDir())
 
 	output := captureStdout(t, func() {
@@ -22,17 +19,9 @@ func TestSessionStart_InWarp(t *testing.T) {
 		}
 	})
 
-	if !strings.Contains(output, "systemMessage") {
-		t.Error("expected systemMessage in output")
-	}
-	if !strings.Contains(output, "Warp terminal detected") {
-		t.Error("expected Warp detection message")
-	}
-	if !strings.Contains(output, "save-workflow") {
-		t.Error("expected workflow instructions")
-	}
-	if !strings.Contains(output, "save-launch") {
-		t.Error("expected launch config instructions")
+	// SessionStart should produce no stdout output (no system message)
+	if output != "" {
+		t.Errorf("expected no output, got %q", output)
 	}
 }
 
@@ -45,30 +34,8 @@ func TestSessionStart_NotInWarp(t *testing.T) {
 		}
 	})
 
-	if !strings.Contains(output, "not running in Warp") {
-		t.Error("expected not-in-Warp message")
-	}
-}
-
-func TestSessionStart_WithExistingWorkflows(t *testing.T) {
-	t.Setenv("TERM_PROGRAM", "WarpTerminal")
-	tmpDir := t.TempDir()
-	t.Setenv("HOME", tmpDir)
-
-	// Create a fake workflow at the platform-appropriate path
-	t.Setenv("XDG_DATA_HOME", "")
-	wfDir := workflow.PersonalDir()
-	os.MkdirAll(wfDir, 0755)
-	os.WriteFile(filepath.Join(wfDir, "test.yaml"), []byte("name: Test WF\ncommand: echo hi\ndescription: A test\n"), 0644)
-
-	output := captureStdout(t, func() {
-		if err := SessionStart(); err != nil {
-			t.Fatalf("SessionStart() error: %v", err)
-		}
-	})
-
-	if !strings.Contains(output, "Personal workflows") {
-		t.Error("expected personal workflows listing")
+	if output != "" {
+		t.Errorf("expected no output, got %q", output)
 	}
 }
 
